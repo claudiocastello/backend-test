@@ -1,7 +1,7 @@
 from . import app, db, whooshee
 
 
-@whooshee.register_model('title') # Testing with 'title' only
+@whooshee.register_model('title_norm') # Testing with 'title' only
 class Vagas(db.Model):
     __tablename__ = 'vagas'
 
@@ -11,6 +11,11 @@ class Vagas(db.Model):
     salario = db.Column(db.Float)
     cidade = db.Column(db.String(50), nullable=False)
     cidade_formated = db.Column(db.String(50), nullable=False)
+
+    title_norm = db.Column(db.String(80), nullable=False)
+    description_norm = db.Column(db.Text, nullable=False)
+    cidade_norm = db.Column(db.String(50), nullable=False)
+
 
     @property
     def serialize(self):

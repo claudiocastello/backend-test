@@ -4,7 +4,7 @@ from flask import jsonify, abort
 from . import app, db
 from .models import Vagas
 
-from .utils import remove_accent_marks
+from .utils import normalize_text
 
 ## Loading .json file ##
 with open('vagas.json', 'r', encoding='utf-8') as f:
@@ -19,10 +19,14 @@ for vaga in vagas['docs']:
                         description=vaga['description'],
                         salario=vaga['salario'],
                         cidade=vaga['cidade'][0],
-                        cidade_formated=vaga['cidadeFormated'][0])
+                        cidade_formated=vaga['cidadeFormated'][0],
+                        title_norm=normalize_text(vaga['title']),
+                        description_norm=normalize_text(vaga['description']),
+                        cidade_norm=normalize_text(vaga['cidade'][0]))
     db.session.add(vaga_to_add)
 
 db.session.commit()
+
 
 
 ### Views ###
