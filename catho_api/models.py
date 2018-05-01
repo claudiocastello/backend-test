@@ -24,10 +24,13 @@ class Vagas(db.Model):
                 'description': self.description,
                 'salario': self.salario,
                 'cidade': [self.cidade],
-                'cidadeFormated': [self.cidade_formated]}
+                'cidadeFormated': [self.cidade_formated],
+                }
 
     def __repr__(self):
         return '({id}, {title}, {salario}, {cidade})'.format(id=self.id,
                                                              title=self.title,
                                                              salario=self.salario,
-                                                             cidade=self.cidade)
+                                                             cidade=self.cidade,
+                                                             description_norm=self.description_norm
+                                                             )
