@@ -49,7 +49,8 @@ def get_vaga_by_salary(salary):
 # Testing full text search with <word>
 @app.route('/catho/app/v1.0/vagas/<word>', methods=['GET'])
 def get_vaga_word(word):
-    vagas = Vagas.query.whooshee_search(word, order_by_relevance=0).order_by(Vagas.salario.desc()).all()
+    norm_word = normalize_text(word)
+    vagas = Vagas.query.whooshee_search(norm_word, order_by_relevance=0).order_by(Vagas.salario.desc()).all()
     vagas_to_show = [vaga.serialize for vaga in vagas]
     if len(vagas_to_show) == 0:
         abort(404)
