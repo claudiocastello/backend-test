@@ -1,5 +1,6 @@
 import json
-from flask import jsonify, abort
+from flask import jsonify, abort, url_for, redirect
+from flask import request as flask_request
 
 from . import app, db
 from .models import Vagas
@@ -31,31 +32,23 @@ db.session.commit()
 ### Views ###
 
 # Return all entries of the .json file
-@app.route('/catho/app/v1.0/vagas', methods=['GET'])
+@app.route('/catho/api/v1.0/vagas', methods=['GET'])
 def get_vagas():
     return jsonify(vagas)
 
 
-# Return entries with salario == salary
-@app.route('/catho/app/v1.0/vagas/by-salary/<int:salary>', methods=['GET'])
-def get_vaga_by_salary(salary):
-    vagas = Vagas.query.filter_by(salario=salary).all()
+@app.route('/catho/api/v1.0/search/', methods=['GET'])
+def search_vaga():
+    query_words = flask_request.args.get('query')
+    city = flask_request.args.get('city')
+    crescent_order = flask_request.args.get('crescent_order')
+
+    norm_words = normalize_text(query_words)
+    vagas = Vagas.query.whooshee_search(norm_words, order_by_relevance=0).order_by(Vagas.salario.desc()).all()
     vagas_to_show = [vaga.serialize for vaga in vagas]
     if len(vagas_to_show) == 0:
         abort(404)
     return jsonify(vagas_to_show)
-
-
-# Testing full text search with <word>
-@app.route('/catho/app/v1.0/vagas/<word>', methods=['GET'])
-def get_vaga_word(word):
-    norm_word = normalize_text(word)
-    vagas = Vagas.query.whooshee_search(norm_word, order_by_relevance=0).order_by(Vagas.salario.desc()).all()
-    vagas_to_show = [vaga.serialize for vaga in vagas]
-    if len(vagas_to_show) == 0:
-        abort(404)
-    return jsonify(vagas_to_show)
-
 
 if __name__ == '__main__':
     app.run(debug=True)

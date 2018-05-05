@@ -5,7 +5,7 @@
     <h1>API Testing</h1>
     <div id="account-login" class="container">
       {{ show_flashes() }}
-      <form class="form-signin" action="{{ url_for('index') }}" method="POST">
+      <form class="form-signin" action="{{ url_for('search') }}" method="POST">
         <h2 class="form-signin-heading">Search JSON</h2>
         {{ render_bootstrap_field(form.test_api) }}
         {{ form.csrf_token }}

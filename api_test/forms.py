@@ -6,7 +6,7 @@ class TestAPIForm(FlaskForm):
     '''
     Simple Form to test the API
     '''
-    test_api =  StringField('Search',
+    test_api =  StringField('search_form',
                 validators=[DataRequired(message='Search something...'),
                             Length(min=3)],
                 description={'placeholder': 'Search'})
