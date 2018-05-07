@@ -2,8 +2,8 @@ from . import app, db, whooshee
 
 
 @whooshee.register_model('title_norm') # Testing with 'title' only
-class Vagas(db.Model):
-    __tablename__ = 'vagas'
+class Jobs(db.Model):
+    __tablename__ = 'jobs'
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)

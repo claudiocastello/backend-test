@@ -7,7 +7,16 @@
       {{ show_flashes() }}
       <form class="form-signin" action="{{ url_for('search') }}" method="POST">
         <h2 class="form-signin-heading">Search JSON</h2>
-        {{ render_bootstrap_field(form.test_api) }}
+        {{ render_bootstrap_field(form.query_words) }}
+
+        <label for="cities"> Cidade: </label>
+        <select class="form-control" id="cities">
+          {% for city in cities %}
+          <option value={{ city }} > {{ city }}</option>
+          {% endfor %}
+        </select>
+        <br>
+
         {{ form.csrf_token }}
         <button class="btn btn-lg btn-success btn-block" type="submit">Go!</button>
       </form>
