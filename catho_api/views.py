@@ -25,8 +25,7 @@ for job in jobs['docs']:
                       cidade=job['cidade'][0],
                       cidade_formated=job['cidadeFormated'][0],
                       title_norm=normalize_text(job['title']),
-                      description_norm=normalize_text(job['description']),
-                      cidade_norm=normalize_text(job['cidade'][0]))
+                      description_norm=normalize_text(job['description']))
     city_set.add(job['cidade'][0])
     db.session.add(job_to_add)
 
@@ -47,16 +46,21 @@ def get_jobs():
 def get_cities():
     return jsonify(city_list)
 
-# Search jobs by title and description (testing only with title for now)
+# Search jobs by title and description (testing only with 'title' for now)
 @app.route('/catho/api/v1.0/search/', methods=['GET'])
 def search_job():
     query_words = flask_request.args.get('query')
     city = flask_request.args.get('city')
-    crescent_order = flask_request.args.get('crescent_order')
+    order = flask_request.args.get('order')
+
+    salary_order = Jobs.salario.asc()
+    if order == 'd':
+        salary_order = Jobs.salario.desc()
 
     norm_words = normalize_text(query_words)
-    jobs = Jobs.query.whooshee_search(norm_words, order_by_relevance=0).order_by(Jobs.salario.desc()).all()
+    jobs = Jobs.query.whooshee_search(norm_words, order_by_relevance=0).order_by(salary_order).all()
     jobs_to_show = [job.serialize for job in jobs]
     if len(jobs_to_show) == 0:
         abort(404)
+        
     return jsonify(jobs_to_show)

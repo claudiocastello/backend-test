@@ -14,8 +14,6 @@ class Jobs(db.Model):
 
     title_norm = db.Column(db.String(80), nullable=False)
     description_norm = db.Column(db.Text, nullable=False)
-    cidade_norm = db.Column(db.String(50), nullable=False)
-
 
     @property
     def serialize(self):
