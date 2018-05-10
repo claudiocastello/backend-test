@@ -53,14 +53,24 @@ def search_job():
     city = flask_request.args.get('city')
     order = flask_request.args.get('order')
 
+    # Difining order to show results based on salary
     salary_order = Jobs.salario.asc()
     if order == 'd':
         salary_order = Jobs.salario.desc()
 
+    # Searching the words in the job openings
     norm_words = normalize_text(query_words)
     jobs = Jobs.query.whooshee_search(norm_words, order_by_relevance=0).order_by(salary_order).all()
+
+    # Building a list  with job openings based on search
     jobs_to_show = [job.serialize for job in jobs]
+    # Filtering the list above by city
+    if city != '--':
+        filtered_by_city = [job for job in jobs_to_show
+                            if job['cidade'][0] == city]
+        jobs_to_show = filtered_by_city
+
     if len(jobs_to_show) == 0:
         abort(404)
-        
+
     return jsonify(jobs_to_show)
