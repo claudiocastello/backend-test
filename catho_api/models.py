@@ -1,7 +1,7 @@
 from . import app, db, whooshee
 
 
-@whooshee.register_model('title_norm') # Testing with 'title' only
+@whooshee.register_model('title_norm', 'description_norm') # Testing with 'title' only
 class Jobs(db.Model):
     __tablename__ = 'jobs'
 

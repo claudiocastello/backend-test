@@ -1,6 +1,6 @@
 import json
-from flask import jsonify, abort, url_for, redirect
-from flask import request as flask_request
+
+from flask import jsonify, abort, url_for, redirect, request as flask_request
 
 from . import app, db
 from .models import Jobs
@@ -42,6 +42,7 @@ city_list = sorted(list(city_set))
 def get_jobs():
     return jsonify(jobs)
 
+# Making the city list available as json
 @app.route('/catho/api/v1.0/cities', methods=['GET'])
 def get_cities():
     return jsonify(city_list)
@@ -53,7 +54,7 @@ def search_job():
     city = flask_request.args.get('city')
     order = flask_request.args.get('order')
 
-    # Difining order to show results based on salary
+    # Defining order to show results based on salary
     salary_order = Jobs.salario.asc()
     if order == 'd':
         salary_order = Jobs.salario.desc()
@@ -66,11 +67,9 @@ def search_job():
     jobs_to_show = [job.serialize for job in jobs]
     # Filtering the list above by city
     if city != '--':
-        filtered_by_city = [job for job in jobs_to_show
-                            if job['cidade'][0] == city]
-        jobs_to_show = filtered_by_city
+        jobs_to_show = list(filter(lambda job: job['cidade'][0] == city, jobs_to_show))
 
     if len(jobs_to_show) == 0:
-        abort(404)
+        return abort(404)
 
     return jsonify(jobs_to_show)

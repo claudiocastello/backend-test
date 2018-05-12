@@ -18,8 +18,11 @@ def search():
     city_list = python_requests.get(cities_url).json()
     form.cities.choices = [(city, city) for city in city_list]
 
+    # Initialize the search results list
     search_results = []
 
+    # Get the parameters in the form and perform the search
+    # calling the api.
     if form.validate_on_submit():
         if flask_request.method == 'POST':
             query = flask_request.form.get('query_words')
@@ -33,12 +36,14 @@ def search():
                         'order': order
                         }
 
+            # Here is the api request with the form data
             query_request = python_requests.get(url=URL, params=form_data)
+            if query_request.status_code == 404:
+                flash('Vaga não encontrada!', 'error')
+                return redirect(url_for('search'))
+
             search_results = query_request.json()
-            return render_template('index.html',
-                                    form=form,
-                                    cities=city_list,
-                                    search_results=search_results)
+
     return render_template('index.html',
                             form=form,
                             cities=city_list,

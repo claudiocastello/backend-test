@@ -18,16 +18,16 @@
     </div> <!-- /container -->
     <h1>Results</h1>
     <div id="account-login" class="container">
-      {% for job in search_results %}
-        <div>
-          <h2>{{ job['title'] }}</h2>
-          <b>Descrição: </b> <br> {{ job['description'] }} <br>
-          <b>Salário: </b> R${{ job['salario'] }} <br>
-          <b>Cidade: </b> {{ job['cidade'][0] }}
-
-        </div>
-        <br>
-      {% endfor %}
+        {% for job in search_results %}
+          <div>
+            <h2>{{ job['title'] }}</h2>
+            <b>Descrição: </b> <br>
+              {{ job['description'] | safe }} <br>
+            <b>Salário: </b> R${{ job['salario'] }} <br>
+            <b>Cidade: </b> {{ job['cidade'][0] }}
+          </div>
+          <br>
+        {% endfor %}
     </div> <!-- /container -->
   </div>
 </div><!-- /.container -->
