@@ -1,10 +1,7 @@
 import json
-
-from flask import jsonify, abort, url_for, redirect, request as flask_request
-
+from flask import jsonify, abort, make_response, request as flask_request
 from . import app, db
 from .models import Jobs
-
 from .utils import normalize_text
 
 ## Loading .json file with job openings ##
@@ -36,19 +33,22 @@ city_list = sorted(list(city_set))
 
 
 ### Views ###
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify( { 'error': 'Not found' } ), 404)
 
 # Return all entries of the .json file
-@app.route('/catho/api/v1.0/jobs', methods=['GET'])
+@app.route('/catho/api/jobs', methods=['GET'])
 def get_jobs():
     return jsonify(jobs)
 
 # Making the city list available as json
-@app.route('/catho/api/v1.0/cities', methods=['GET'])
+@app.route('/catho/api/cities', methods=['GET'])
 def get_cities():
     return jsonify(city_list)
 
 # Search jobs by title and description (testing only with 'title' for now)
-@app.route('/catho/api/v1.0/search/', methods=['GET'])
+@app.route('/catho/api/search/', methods=['GET'])
 def search_job():
     query_words = flask_request.args.get('query')
     city = flask_request.args.get('city')
